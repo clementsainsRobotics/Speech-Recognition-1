@@ -59,7 +59,6 @@
 % 8		3	20 	14
 
 
-
 function [HMM] = myTrain(dir_train, max_iter, M, Q, D, N)
 
 	if nargin < 2
@@ -133,7 +132,7 @@ function [HMM] = myTrain(dir_train, max_iter, M, Q, D, N)
 		disp(['Training HMM for ', phn])
 		[HMM.(phn), LL] = trainHMM( HMM.(phn), PHN_data.(phn), max_iter );
 
-		disp([num2str(100*i/f),'% complete'])
+		disp([num2str(100*i/length(f)),'% complete'])
 
 	end
 

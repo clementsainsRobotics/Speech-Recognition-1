@@ -1,0 +1,2 @@
+addpath(genpath('../'));
+myTrain('../../Training', 5, 8, 7, 14, 20);
