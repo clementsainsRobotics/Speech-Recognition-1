@@ -5,37 +5,9 @@
 % Note that each model is trained on all data of a specific phoneme
 % across all speakers; hence these models will be speaker-independent.
 
-% myTrain must use the same HMM format as initHMM and trainHMM. Once you have trained
-% the models, write a script myRun that collects all phoneme sequences from the
-% test data given their respective *.phn files. myRun must find the log
-% likelihood of each phoneme sequence in the test data given each HMM phoneme
-% model using the loglikHMM function. Report in your discussion on the
-% proportion of correct identifications of the phoneme sequences in the test
-% data.
 
 
-% The array 'data' holds all the instances (sequences) for a particular phoneme
-% over all utterances from all speakers. You'd have one 'data' array for /f/,
-% another for /ah/, and so on.
- 
-% So here we are, looping over all Speakers and within that loop we're looping
-% over all *.phn files in their directories. We open a *phn file and then go
-% line-by-line in that file.
- 
-% For example, imagine that we have an /iy/ from sample 0 to sample 1,280. We
-% need to make a copy of the relevant frames from the mfcc file (those frames
-% are (0/128+1) to (1280/128+1) -- 1 to 11. We just copy the first 11 frames
-% from the appropriate *.mfcc file -- that is a complete example of /iy/
-% consisting of 11 frames.
- 
-% We now append that data (the transpose of that matrix) into 'data'. If this is
-% the first time we've seen a /iy/ in our loops, that sequence is in data(1). If
-% it's the second time we've seen /iy/ (regardless of whether it's in the same
-% file or the same speaker), we put that sequence in data(2). And so on.
-
-
-
-function [HMM] = myTrain(dir_train, max_iter, M, Q, D, N)
+function [HMM] = myTrain(dir_train, max_iter, M, Q, D, S)
 
 	if nargin < 2
 		max_iter = 5;
@@ -52,15 +24,15 @@ function [HMM] = myTrain(dir_train, max_iter, M, Q, D, N)
 	
 	speaker_dirs = dir([dir_train, filesep, '*0']);
 	speakers = length(speaker_dirs);
-	if nargin < 6 || N > speakers
-		N = speakers;
+	if nargin < 6 || S > speakers
+		S = speakers;
 	end
 
-	file_name = ['HMM_M' num2str(M) '-Q' num2str(Q) '-N' num2str(N) '-D' num2str(D), '-I', num2str(max_iter), '.mat'];
+	file_name = ['HMM_M' num2str(M) '-Q' num2str(Q) '-S' num2str(S) '-D' num2str(D), '-I', num2str(max_iter), '.mat'];
 
 	PHN_data = struct();
 
-	for s = 1:speakers
+	for s = 1:S
 
 		speaker = speaker_dirs(s).name;
 
