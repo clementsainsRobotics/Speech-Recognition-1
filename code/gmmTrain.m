@@ -36,6 +36,7 @@ function gmms = gmmTrain( dir_train, max_iter, epsilon, M, D )
 	speaker_dirs = dir([dir_train, filesep, '*0']);
 	gmms = cell(1, length(speaker_dirs)-2);  % subtract 2 to neglect links to current and parent directory 
 
+	file_name = ['HMM_M' num2str(M) '-E' num2str(epsilon) '-D' num2str(D), '-I', num2str(max_iter), '.mat'];
 
 	i = 1;
 	while i < length(speaker_dirs)
@@ -148,7 +149,7 @@ function gmms = gmmTrain( dir_train, max_iter, epsilon, M, D )
 
 	end
 
-	save( 'gmms', 'gmms', '-mat' ); 
+	save( file_name, 'gmms', '-mat' ); 
 
 end
 
