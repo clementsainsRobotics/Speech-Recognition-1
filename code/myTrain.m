@@ -33,30 +33,6 @@
 % it's the second time we've seen /iy/ (regardless of whether it's in the same
 % file or the same speaker), we put that sequence in data(2). And so on.
 
-% Experiments:
-
-% M = {8, 10, 12 14}
-% D = {14, 12, 10, 8}
-% Q = {3, 4, 5, 6}
-% N = {10, 15, 20, 25}
-
-% M		Q 	N 	D
-% 8		3	20 	14
-% 10 	3	20 	14
-% 12 	3	20 	14
-% 14 	3	20 	14
-% 8		3	20 	14
-% 8		4	20 	14
-% 8		5	20 	14
-% 8		6	20 	14
-% 8		3	10 	14
-% 8		3	15 	14
-% 8		3	20 	14
-% 8		3	25 	14
-% 8		3	28 	8
-% 8		3	20 	10
-% 8		3	20 	12
-% 8		3	20 	14
 
 
 function [HMM] = myTrain(dir_train, max_iter, M, Q, D, N)

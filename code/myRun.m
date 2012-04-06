@@ -50,7 +50,7 @@ function myRun(HMM, dir_test, D)
 
 		end
 
-		disp(['----- ', num2str(round(100*f/length(phn_files))), '% COMPLETE -----')		
+		disp(['----- ', num2str(round(100*f/length(phn_files))), '% COMPLETE -----']);		
 
 
 	end

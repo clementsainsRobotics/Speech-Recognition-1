@@ -67,17 +67,6 @@ function gmmClassify( dir_test, gmms, M )
 
 		end
 
-		% Save top 5 to unkn_N.lik
-		
-		A = {};
-		y = 1;
-		for i = 1:length(top)
-			A{y} = top{i}.name;
-			A{y+1} = num2str(top{i}.score);
-			y = y + 2;
-		end
-
-
 		fp = fopen( ['lik', filesep, regexprep(unkn_mfccs(N).name, '\.mfcc$', '.lik')], 'w' );
 		fprintf(fp, '%s %f\n%s %f\n%s %f\n%s %f\n%s %f', top{1}.name, top{1}.score, top{2}.name, top{2}.score, top{3}.name, top{3}.score, top{4}.name, top{4}.score, top{5}.name, top{5}.score);
 		fclose(fp);
