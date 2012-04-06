@@ -1,8 +1,5 @@
 function myRun(HMM, dir_test, D)
 
-	% M = Mixtures per sequence
-	% Q = States per sequence
-
 	if nargin < 3 || D > 14
 		D = 14;
 	end
@@ -11,6 +8,8 @@ function myRun(HMM, dir_test, D)
 
 	correct = 0;
 	total = 0;
+
+	fp = fopen(['myrun_output_',datestr(now),'.txt'], 'w');
 
 	for f = 1:length(phn_files)
 
@@ -41,10 +40,12 @@ function myRun(HMM, dir_test, D)
 
 			if strcmp(best_LL.phn, phn)
 				correct = correct + 1;
-				disp(['Correct - Expected ', best_LL.phn, ', got ', phn]);
+				out = ['Correct - Expected ', best_LL.phn, ', got ', phn];
 			else
-				disp(['Incorrect - Expected ', best_LL.phn, ', got ', phn]);
+				out = ['Incorrect - Expected ', best_LL.phn, ', got ', phn];
 			end
+			disp(out);
+			fprintf(fp, '%s\n', out);
 
 			total = total + 1;
 
@@ -55,7 +56,11 @@ function myRun(HMM, dir_test, D)
 
 	end
 
-	disp(['Percent Correct: ', num2str(100*correct/total)])
+	out = ['Percent Correct: ', num2str(100*correct/total)];
+	disp(out);
+	fprintf(fp, '%s\n', out);
+
+	fclose(fp);
 
 
 end

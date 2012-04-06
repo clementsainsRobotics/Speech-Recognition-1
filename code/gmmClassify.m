@@ -10,11 +10,25 @@
 % the five most likely speakers for each test utterance. Put
 % these in files called unkn_N.lik for each test utterance N.
 
-
-function gmmClassify( dir_test, gmms, M )
+% dir_test: path to Testing directory
+% gmms: struct created by gmmTrain
+% M: number of Gaussians/mixture (integer)
+% N: number of possible speakers
+% output_dir: path to directory to output results (must already exist)
+function gmmClassify( dir_test, gmms, M, S, output_dir )
 
 	format long;
 	D = 14;
+
+	if nargin < 3
+		M = 8;
+	end
+	if nargin < 4
+		S = Inf;
+	end
+	if nargin < 5
+		output_dir = 'lik';
+	end
 
 	unkn_mfccs = dir([dir_test, filesep, 'unkn*mfcc']);
 
@@ -34,7 +48,7 @@ function gmmClassify( dir_test, gmms, M )
 			top{y} = struct('name', '', 'score', -Inf);
 		end
 
-		for s = 1:length(gmms)
+		for s = 1:min(length(gmms), S)
 			Theta = gmms{s};
 
 			% Compute log-likelihood.
@@ -67,7 +81,7 @@ function gmmClassify( dir_test, gmms, M )
 
 		end
 
-		fp = fopen( ['lik', filesep, regexprep(unkn_mfccs(N).name, '\.mfcc$', '.lik')], 'w' );
+		fp = fopen( [output_dir, filesep, regexprep(unkn_mfccs(N).name, '\.mfcc$', '.lik')], 'w' );
 		fprintf(fp, '%s %f\n%s %f\n%s %f\n%s %f\n%s %f', top{1}.name, top{1}.score, top{2}.name, top{2}.score, top{3}.name, top{3}.score, top{4}.name, top{4}.score, top{5}.name, top{5}.score);
 		fclose(fp);
 

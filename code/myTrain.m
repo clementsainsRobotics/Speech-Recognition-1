@@ -56,7 +56,7 @@ function [HMM] = myTrain(dir_train, max_iter, M, Q, D, N)
 		N = speakers;
 	end
 
-	file_name = ['HMM_M' num2str(M) '-Q' num2str(Q) '-N' num2str(N) '-D' num2str(D), '-I', num2str(max_iter), '.mat']
+	file_name = ['HMM_M' num2str(M) '-Q' num2str(Q) '-N' num2str(N) '-D' num2str(D), '-I', num2str(max_iter), '.mat'];
 
 	PHN_data = struct();
 

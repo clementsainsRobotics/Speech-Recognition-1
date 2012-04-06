@@ -20,7 +20,7 @@ function gmms = gmmTrain( dir_train, max_iter, epsilon, M, D )
 
 	% Set default values if necessary.
 	if nargin < 2
-		max_iter = 20;
+		max_iter = 50;
 	end
 	if nargin < 3
 		epsilon = 0.001;
@@ -68,7 +68,7 @@ function gmms = gmmTrain( dir_train, max_iter, epsilon, M, D )
 		% Initialize Theta.
 		for m = 1:M
 			Theta.cov(:,:,m) = diag(ones(D,1),0);   % DxD identity matrix
-			Theta.means(:,m) = X(:, randomInteger(1,num_vectors));   % random vector from speaker data
+			Theta.means(:,m) = X(:, randomInteger(1,num_vectors-1));   % random vector from speaker data
 			Theta.weights(m) = 1 / M;
 		end
 
