@@ -57,7 +57,7 @@ function gmmClassify( dir_test, gmms, M, S, output_dir )
 				x = X(:,t);
 				p_x = 0;
 				for m = 1:M
-					p_x = p_x + Theta.weights(m) * b_m_x(m, x, Theta, D);
+					p_x = p_x + Theta.weights(m) * exp(b_m_x(m, x, Theta, D));
 				end
 				LL = LL + log2(p_x);
 			end

@@ -25,11 +25,6 @@ function [SE IE DE LEV_DIST] = Levenshtein(hypothesis, annotation_dir)
 	H = length(HypSentences);
 	for h = 1:H
 
-		Hyp_SE = 0; 
-		Hyp_IE = 0;
-		Hyp_DE = 0;
-		
-
 		[s, e, RefSentence] = textread([annotation_dir, filesep, 'unkn_', num2str(h), '.txt'], '%d %d %s', 'delimiter','\n');
 		HypSentence = HypSentences(h);
 
@@ -40,6 +35,7 @@ function [SE IE DE LEV_DIST] = Levenshtein(hypothesis, annotation_dir)
 		M = length(HypWords);
 
 		R = zeros(N, M); % matrix of distances
+		B = cell(N, M); % for backtracking
 
 
 		for i = 1:size(R)
@@ -64,28 +60,28 @@ function [SE IE DE LEV_DIST] = Levenshtein(hypothesis, annotation_dir)
 				R(i,j) = min(Del, min(Sub, Ins));
 
 				if R(i,j) == Del
-					Hyp_DE = Hyp_DE + 1;
+					B{i,j} = 'UP';
 				elseif R(i,j) == Ins
-					Hyp_IE = Hyp_IE + 1;
+					B{i,j} = 'LEFT';
 				else
-					Hyp_SE = Hyp_SE + 1;
+					B{i,j} = 'UPLEFT';
 				end
 
 			end
 		end
+
+		% Backtrack. Count insertion/substiution/deletion errors.
+		[Hyp_SE, Hyp_IE, Hyp_DE] = BackTrack(B, N, M, RefWords, HypWords);
 
 		Hyp_SE = Hyp_SE / N;
 		Hyp_IE = Hyp_IE / N;
 		Hyp_DE = Hyp_DE / N;
 		Hyp_LEV_DIST = 100 * R(N,M) / N;
 
-		TotalRefWords = TotalRefWords + N;
 
-		% For debugging:
-		%disp(['HYP SENTENCE ', num2str(h)]);
-		%disp(['... SE=', num2str(Hyp_SE), '; IE=', num2str(Hyp_IE), '; DE=', num2str(Hyp_DE), '; LEV_DIST=', num2str(Hyp_LEV_DIST)]);
-		%disp(R);
-		%disp(R(N,M));
+		% For debuging:
+		disp(['HYP SENTENCE ', num2str(h)]);
+		disp(['> #REF=', num2str(N), '; #HYP=', num2str(M) ,'; SE=', num2str(Hyp_SE), '; IE=', num2str(Hyp_IE), '; DE=', num2str(Hyp_DE), '; LEV_DIST=', num2str(Hyp_LEV_DIST)]);
 
 		% Uncomment to calculate by normal mean:
 		% SE = SE + Hyp_SE;
@@ -98,6 +94,8 @@ function [SE IE DE LEV_DIST] = Levenshtein(hypothesis, annotation_dir)
 		IE = IE + N*Hyp_IE;
 		DE = DE + N*Hyp_DE;
 		LEV_DIST = LEV_DIST + N*Hyp_LEV_DIST;
+
+		TotalRefWords = TotalRefWords + N;
 
 	end
 
@@ -113,4 +111,35 @@ function [SE IE DE LEV_DIST] = Levenshtein(hypothesis, annotation_dir)
 	DE = DE / TotalRefWords;
 	LEV_DIST = LEV_DIST / TotalRefWords;
 
+return
+
+% Function to compute number of errors of each type.
+% B = Backtracking matrix
+% N = # Ref words
+% M = # Hyp words
+% REF = array of refererence words
+% HYP = array of hypothesis words
+function [SE IE DE] = BackTrack(B, N, M, REF, HYP)
+	a = N;
+	b = M;
+	SE = 0;
+	IE = 0;
+	DE = 0;
+	while a >= 1 && b >= 1
+		if strcmp(B(a,b), 'UP')
+			DE = DE + 1;
+			a = a - 1;
+		else if strcmp(B(a,b), 'LEFT')
+			IE = IE + 1;
+			b = b - 1;
+		else  % UPLEFT
+			if ~strcmp(REF{a}, HYP{b})
+				SE = SE + 1;
+			end 
+			a = a - 1;
+			b = b - 1;
+		end
+	end
 end
+
+

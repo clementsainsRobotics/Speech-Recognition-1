@@ -38,8 +38,7 @@ function gmms = gmmTrain( dir_train, max_iter, epsilon, M, D )
 
 	file_name = ['GMM_M' num2str(M) '-E' num2str(epsilon) '-D' num2str(D), '-I', num2str(max_iter), '.mat'];
 
-	i = 1;
-	while i < length(speaker_dirs)
+	for i = 1:length(speaker_dirs)
 
 		speaker_name = speaker_dirs(i).name;
 
@@ -98,8 +97,8 @@ function gmms = gmmTrain( dir_train, max_iter, epsilon, M, D )
 
 				P_theta = 0;
 				for m = 1:M
-					% Calculate b, given m and x.
-					b_ms(m,t) = b_m_x(m, x, Theta, D);
+					% Calculate b_m(x).
+					b_ms(m,t) = exp(b_m_x(m, x, Theta, D));
 					% P_theta += omega_m * b_m(x_t)
 					P_theta = P_theta + (Theta.weights(m) * b_ms(m,t));
 				end
@@ -145,7 +144,6 @@ function gmms = gmmTrain( dir_train, max_iter, epsilon, M, D )
 		end
 
 		gmms{i} = Theta;
-		i = i + 1;
 
 	end
 
