@@ -1,15 +1,23 @@
-function myRun(HMM, dir_test, D)
+% HMM_file: Path to .mat file containing HMM structure
+% dir_test: Path to Testing directory
+% file_name: Path to file to save output to
+function myRun(HMM_file, dir_test, D, file_name)
 
 	if nargin < 3 || D > 14
 		D = 14;
 	end
+	if nargin < 4
+		file_name = regexprep(HMM_file, '^[.]*/?(.*)\.mat$', '$1.txt');
+	end
+
+	load(HMM_file);
 
 	phn_files = dir([dir_test, filesep, '*phn']);
 
 	correct = 0;
 	total = 0;
 
-	fp = fopen(['myrun_output_',datestr(now),'.txt'], 'w');
+	fp = fopen(file_name, 'w');
 
 	for f = 1:length(phn_files)
 
