@@ -15,7 +15,7 @@
 % M: number of Gaussians/mixture (integer)
 % N: number of possible speakers
 % output_dir: path to directory to output results (must already exist)
-function gmmClassify( dir_test, gmms, M, S, output_dir, D )
+function gmmClassify( dir_test, gmms, M, S, output_dir, D, p )
 
 	format long;
 	D = 14;
@@ -32,6 +32,9 @@ function gmmClassify( dir_test, gmms, M, S, output_dir, D )
 	if nargin < 6
 		D = 14;
 	end
+	if nargin < 7
+		p = 10;
+	end
 
 	unkn_mfccs = dir([dir_test, filesep, 'unkn*mfcc']);
 
@@ -43,6 +46,10 @@ function gmmClassify( dir_test, gmms, M, S, output_dir, D )
 		fid = fopen([dir_test, filesep, unkn_mfccs(N).name]);
 		X = fscanf(fid, '%f %f %f %f %f %f %f %f %f %f %f %f %f %f', [D Inf]);
 		fclose(fid);
+
+		% Transform data.
+		X = pca(X', p);
+		D = p;
 
 		T = length(X);
 

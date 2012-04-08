@@ -1,4 +1,4 @@
-function gmms = gmmTrain( dir_train, max_iter, epsilon, M, D, N )
+function gmms = gmmTrain_PCA( dir_train, max_iter, epsilon, M, D, p )
 % gmmTain
 %
 %  inputs:  dir_train  : a string pointing to the high-level
@@ -6,8 +6,8 @@ function gmms = gmmTrain( dir_train, max_iter, epsilon, M, D, N )
 %           max_iter   : maximum number of training iterations (integer)
 %           epsilon    : minimum improvement for iteration (float)
 %           M          : number of Gaussians/mixture (integer)
-%			D 		   : vector dimension (default 14)
-%			N 		   : the amount of lines to read from each mfcc
+%			D          : dimension of vector (default 14)
+%			p          : the compressed dimension (p < D)
 %
 %  output:  gmms       : a 1xN cell array. The i^th element is a structure
 %                        with this structure:
@@ -34,7 +34,7 @@ function gmms = gmmTrain( dir_train, max_iter, epsilon, M, D, N )
 		D = 14;
 	end
 	if nargin < 6
-		N = Inf;
+		p = 10;
 	end
 
 
@@ -59,7 +59,7 @@ function gmms = gmmTrain( dir_train, max_iter, epsilon, M, D, N )
 
 			% Read vectors in MFCC file.
 			fid = fopen([dir_train, filesep, speaker_name, filesep, speaker_data_files(j).name]);
-			data = fscanf(fid, '%f %f %f %f %f %f %f %f %f %f %f %f %f %f', [D N]);
+			data = fscanf(fid, '%f %f %f %f %f %f %f %f %f %f %f %f %f %f', [D Inf]);
 			fclose(fid);
 
 			for d = 1:length(data)
@@ -68,6 +68,13 @@ function gmms = gmmTrain( dir_train, max_iter, epsilon, M, D, N )
 			end
 
 		end
+
+		% Transform data.
+		X = pca(X', p)';
+		D = p;
+		Theta.cov = zeros(D, D, M);
+		Theta.means = zeros(D, M);
+
 
 
 		% Initialize Theta.

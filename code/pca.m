@@ -1,4 +1,6 @@
 
+% Function for computing Principal components analysis.
+
 % data = the original data
 % d = the new dimension
 function [new_data] = pca(data, p)
@@ -17,7 +19,7 @@ function [new_data] = pca(data, p)
 	cov_data = cov(data);
 
 	% Calculate the p most significant eigenvectors and eigenvalues of covariance matrix.
-	[FeatureVector, D] = eigs(cov_data, p)
+	[FeatureVector, D] = eigs(cov_data, p);
 
 	new_data = FeatureVector' * data';
 
