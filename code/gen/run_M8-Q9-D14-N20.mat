@@ -1,2 +1,0 @@
-addpath(genpath('../'));
-myTrain('../../Training', 5, 8, 9, 14, 20);
